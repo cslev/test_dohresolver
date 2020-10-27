@@ -15,8 +15,8 @@ function show_help
  }
 
 IP="104.16.248.0/24"
-DOMAIN=""
-RESOLVER_URI=""
+DOMAIN="google.com"
+RESOLVER_URI="https://mozilla.cloudflare-dns.com"
 
 
 while getopts "h?a:d:r:" opt
@@ -71,7 +71,7 @@ c_print "White" "Resolving domain ${DOMAIN} using ${RESOLVER_URI}..."
 if [ "$PREFIX" == "24" ]
 then
   IP_SUB=$(echo ${NETWORK} | cut -d '.' -f 1-3)
-  for i in {1..255}
+  for i in {0..255}
   do
     c_print "White" "Testing IP ${IP_SUB}.${i}..." 1
     curl -H 'accept: application/dns-json' --resolve mozilla.cloudflare-dns.com:443:${IP_SUB}.${i} 'https://mozilla.cloudflare-dns.com/dns-query?name=google.com&type=A' 2>&1 |grep "\"Status\":0" -q
@@ -89,9 +89,9 @@ fi
 if [ "$PREFIX" == "16" ]
 then
   IP_SUB=$(echo ${NETWORK} | cut -d '.' -f 1-2)
-  for i in {1..255}
+  for i in {0..255}
   do
-    for j in {1..255}
+    for j in {0..255}
     do
       c_print "White" "Testing IP ${IP_SUB}.${i}.${j}..." 1
       curl -H 'accept: application/dns-json' --resolve mozilla.cloudflare-dns.com:443:${IP_SUB}.${i}.${j} 'https://mozilla.cloudflare-dns.com/dns-query?name=google.com&type=A' 2>&1 |grep "\"Status\":0" -q
