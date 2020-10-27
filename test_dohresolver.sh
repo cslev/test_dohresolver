@@ -58,7 +58,7 @@ then
 else
   
   #parse json object - we need jq for this --- install jq if you don't have it
-  resolver=$(cat $mydir/sources/r_config.json |jq|grep "\"id\": ${RESOLVER_ID}," -A 3|grep uri|cut -d ':' -f 2-|sed "s/\"//g"|sed "s/ //g"|sed "s/,//g")
+  resolver=$(cat $mydir/sources/r_config.json |jq .|grep "\"id\": ${RESOLVER_ID}," -A 3|grep uri|cut -d ':' -f 2-|sed "s/\"//g"|sed "s/ //g"|sed "s/,//g")
   RESOLVER_URI=$resolver
   c_print "White" "Chosen resolver's URI: ${RESOLVER_URI}"
 fi
