@@ -59,6 +59,7 @@ else
   
   #parse json object - we need jq for this --- install jq if you don't have it
   resolver=$(cat $mydir/sources/r_config.json |jq .|grep "\"id\": ${RESOLVER_ID}," -A 3|grep uri|cut -d ':' -f 2-|sed "s/\"//g"|sed "s/ //g"|sed "s/,//g")
+  resolver_name=resolver=$(cat $mydir/sources/r_config.json |jq .|grep "\"id\": ${RESOLVER_ID}," -A 3|grep simple_name|cut -d ':' -f 2-|sed "s/\"//g"|sed "s/ //g"|sed "s/,//g")
   RESOLVER_URI=$resolver
   c_print "White" "Chosen resolver's URI: ${RESOLVER_URI}"
 fi
@@ -81,8 +82,12 @@ if [ -z $L ]
 
 #get date
 d=$(date +"%Y%m%d_%H%M%S")
+
+
 D="http://${DOMAIN}"
 R=$RESOLVER_URI
+
+output_file="doh_res_${resolver_name}_${d}"
 
 # rm curl_output 2&>1 /dev/null
 
@@ -100,7 +105,7 @@ R=$RESOLVER_URI
 if [ -z $L ]
 then
   c_print "White" "Check $D via $R..."
-  curl -sS -m 10 --doh-url $R $D 1>curl_output
+  curl -sS -m 10 --doh-url $R $D 2&>1 > /dev/null
   # $curl_cmd
   retval=$(echo $?)
   MAP[$retval]=1
@@ -112,7 +117,8 @@ else
     j=`expr $j + 1`
     D="http://${i}"
     echo "${j} -- ${D}"
-    curl -sS -m 10 --doh-url $R $D 2&>1 >> curl_output_$d
+    echo "${j} -- ${D}" >> output_file
+    curl -sS -m 10 --doh-url $R $D 2&>1 > /dev/null
     # $curl_cmd
     retval=$(echo $?)
 
@@ -132,4 +138,5 @@ c_print "White" "Return value statistics:"
 for K in ${!MAP[@]}
 do 
   echo "Return code ${K}  --  ${MAP[$K]}" 
+  echo "Return code ${K}  --  ${MAP[$K]}" >> output_file
 done
