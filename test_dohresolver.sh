@@ -105,7 +105,7 @@ output_file="doh_res_${resolver_name}_${d}"
 if [ -z $L ]
 then
   c_print "White" "Check $D via $R..."
-  curl -sS -m 10 --doh-url $R $D 2&>1 > /dev/null
+  curl -sS -m 10 --doh-url $R $D 2>&1 > /dev/null
   # $curl_cmd
   retval=$(echo $?)
   MAP[$retval]=1
@@ -117,8 +117,8 @@ else
     j=`expr $j + 1`
     D="http://${i}"
     echo "${j} -- ${D}"
-    echo "${j} -- ${D}" >> output_file
-    curl -sS -m 10 --doh-url $R $D 2&>1 > /dev/null
+    echo "${j} -- ${D}" >> $output_file
+    curl -sS -m 10 --doh-url $R $D 2>&1 > /dev/null
     # $curl_cmd
     retval=$(echo $?)
 
@@ -138,5 +138,5 @@ c_print "White" "Return value statistics:"
 for K in ${!MAP[@]}
 do 
   echo "Return code ${K}  --  ${MAP[$K]}" 
-  echo "Return code ${K}  --  ${MAP[$K]}" >> output_file
+  echo "Return code ${K}  --  ${MAP[$K]}" >> $output_file
 done
