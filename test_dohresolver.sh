@@ -2,10 +2,10 @@
 
 mydir="$(dirname "$0")"
 source $mydir/sources/extra.sh
- 
- 
-function show_help 
- { 
+
+
+function show_help
+ {
  	c_print "Green" "This script uses curl --doh-url to test a DoH resolver"
  	c_print "Bold" "Example: ./test_dohresolver.sh -r <RESOLVER_URI> -d <DOMAIN>"
  	c_print "Bold" "\t\t-d <DOMAIN>: set the DOMAIN to resolve (Default: google.com)."
@@ -39,7 +39,7 @@ while getopts "h?d:r:l:" opt
  		;;
  	l)
  		L=$OPTARG
- 		;;     
+ 		;;
  	*)
  		show_help
  		;;
@@ -56,10 +56,10 @@ then
   RESOLVER_URI=$DEFAULT_RESOLVER_URI
 # show_help
 else
-  
+
   #parse json object - we need jq for this --- install jq if you don't have it
   resolver=$(cat $mydir/sources/r_config.json |jq .|grep "\"id\": ${RESOLVER_ID}," -A 3|grep uri|cut -d ':' -f 2-|sed "s/\"//g"|sed "s/ //g"|sed "s/,//g")
-  resolver_name=resolver=$(cat $mydir/sources/r_config.json |jq .|grep "\"id\": ${RESOLVER_ID}," -A 3|grep simple_name|cut -d ':' -f 2-|sed "s/\"//g"|sed "s/ //g"|sed "s/,//g")
+  resolver_name=$(cat $mydir/sources/r_config.json |jq .|grep "\"id\": ${RESOLVER_ID}," -A 3|grep simple_name|cut -d ':' -f 2-|sed "s/\"//g"|sed "s/ //g"|sed "s/,//g")
   RESOLVER_URI=$resolver
   c_print "White" "Chosen resolver's URI: ${RESOLVER_URI}"
 fi
